@@ -1,5 +1,5 @@
 from src.api import API
-from src.dbmanager import DBManager
+from src.connection import DBManager
 from src.definitions import *
 from src.config import *
 
