@@ -1,6 +1,6 @@
 # deriduck
 
-A DuckDB-based database for Deribit.com market data. It handles ingestion, storage, and processing of futures, options, and spot order data.
+A DuckDB-based database for Deribit.com historic market data. It handles ingestion, storage, and processing of futures, options, and spot order data.
 
 # Requirements
 
