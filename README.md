@@ -58,6 +58,7 @@ The project uses a single entry point.
 3. Views and Macros:
 
         funding_view             View  - Realized funding rates by minute.
+        spot_1min_ohlc           View  - Spot trades OHLC.
         futures_by_volume        Macro - Tick based dollar bars.
         funding_volume_weighted  Macro - Join dollar bars with realized funding.
         ohlc_dollar_bars         Macro - OHLC based dollar bars.
