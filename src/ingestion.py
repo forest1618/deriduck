@@ -1,4 +1,4 @@
-from datetime import datetime, timezone, date
+from datetime import datetime, timezone
 from src.api import API
 from src.connection import DBManager
 from src.config import *
@@ -51,5 +51,4 @@ def update_db_data():
     # spot trades
     update_data(
         'spot_trades', 'USDT', 'spot',  # USDT returns all spot currencies
-        api.get_last_trades_by_currency
-    )
+        api.get_last_trades_by_currency)

@@ -469,6 +469,69 @@ class DBManager:
         self.run_command(q)
         self.run_command("COMMENT ON VIEW funding_view IS 'e' ") # tag views
 
+        # spot ohlc
+        q = """
+            CREATE OR REPLACE VIEW spot_1min_ohlc AS
+            WITH ticks AS (
+                SELECT
+                    date_trunc('minute', timestamp) AS bucket,
+                    instrument_name,
+                    timestamp,
+                    price,
+                    amount
+                FROM spot_trades
+            ),
+            returns AS (
+                SELECT
+                    bucket,
+                    instrument_name,
+                    timestamp,
+                    POW(
+                        LN(price / LAG(price) OVER (
+                            PARTITION BY instrument_name, bucket
+                            ORDER BY timestamp
+                        )),
+                        2
+                    ) AS ret2,
+                    amount
+                FROM ticks
+            ),
+            agg AS (
+                SELECT
+                    bucket,
+                    instrument_name,
+                    SUM(amount) AS total_volume
+                FROM ticks
+                GROUP BY 1, 2
+            )
+            SELECT 
+                t.bucket,
+                t.instrument_name,
+                MIN(t.timestamp)                        AS first_trade,
+                MAX(t.timestamp)                        AS last_trade,
+                ARG_MIN(t.price, t.timestamp)           AS open,
+                MAX(t.price)                            AS high,
+                MIN(t.price)                            AS low,
+                ARG_MAX(t.price, t.timestamp)           AS close,
+                SUM(t.price * t.amount) / SUM(t.amount) AS vwap,
+                SUM(t.amount)                           AS volume,
+                COUNT(*)                                AS n_orders,
+                SUM(r.ret2)                             AS realized_sq_vol,
+                SUM(r.ret2 * r.amount / a.total_volume) AS realized_sq_vol_vw
+
+            FROM ticks t
+            LEFT JOIN returns r
+                ON t.bucket = r.bucket
+            AND t.instrument_name = r.instrument_name
+            LEFT JOIN agg a
+                ON t.bucket = a.bucket
+            AND t.instrument_name = a.instrument_name
+            GROUP BY 1, 2
+
+            """
+        self.run_command(q)
+        self.run_command("COMMENT ON VIEW spot_1min_ohlc IS 'e' ") # tag views
+
     def init_macros(self):
         # dollar candles 
         q = """
