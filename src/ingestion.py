@@ -21,6 +21,7 @@ def update_data(
     update_fn(currency, kind, latest, end_date, table)
 
 def update_db_data():
+    print(f'{datetime.now(timezone.utc)} - Update started - Stop it with Ctrl-C if you want')
     for each in currencies:
 
         # --- DERIBIT DATA SECTION --- #

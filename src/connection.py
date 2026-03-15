@@ -10,7 +10,8 @@ def datetime_to_timestamp(datetime_obj):
 class DBManager:
     def __init__(self, address: str):
         self.con = db.connect(address)
-        self.con.execute("SET TimeZone='UTC'; LOAD stochastic") 
+        self.con.execute("SET TimeZone='UTC';") 
+        self.con.execute("INSTALL stochastic; LOAD stochastic;") 
 
         self.min_date = start_date 
 

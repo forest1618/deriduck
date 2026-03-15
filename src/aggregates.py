@@ -1,4 +1,3 @@
-from src.api import API
 from src.connection import DBManager
 from src.config import *
 
@@ -7,6 +6,7 @@ def make_aggregates():
     db = DBManager(db_address)
 
     for each in currencies:
+        print(f'{datetime.now(timezone.utc)} - Aggregation started - Do not interrupt')
 
         # --- AGGREGATES SECTION --- #
 
